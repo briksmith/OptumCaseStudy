@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,8 +50,14 @@ public class UserController {
 	}
 	
 	@RequestMapping(value = "/deleteByUserId/{id}", method = {RequestMethod.GET, RequestMethod.POST})
-	public void deleteUserByID(@PathVariable Long id) {
-		userRepository.deleteById(id);
+	public User deleteUserByID(@PathVariable Long id) {
+		Optional<User> user = userRepository.findById(id);
+		try {
+			userRepository.deleteById(id);
+			return user.get();
+		} catch (EmptyResultDataAccessException e) {
+			return Consts.MISSING_USER;
+		}
 	}
 	
 	@GetMapping(value = "/getUsersByName/{firstName}/{lastName}")

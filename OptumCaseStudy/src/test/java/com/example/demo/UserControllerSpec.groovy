@@ -15,12 +15,14 @@ import org.springframework.ui.Model
 import spock.lang.Specification
 import spock.lang.Shared
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.EmptyResultDataAccessException
 
 @SpringBootTest
 class UserControllerSpec extends Specification{
 	
-	def mockUserRepository = Mock(UserRepository)
-	UserController systemUnderTest = new UserController(mockUserRepository)
+	def mockUserRepository 
+	UserController systemUnderTest 
+	UserController systemUnderTestNoMock 
 	
 	@BeforeEach
 	def void setup() {
@@ -84,20 +86,24 @@ class UserControllerSpec extends Specification{
 	}
 	
 	@Test
-	def "test delete by user Id"(){
+	def "test delete by user Id Happy Path"(){
 		given:
 		User user = new User("Bobby", "Hull")
+		Optional<User> optional = new Optional(user);
 		
 		when:
-		systemUnderTest.deleteUserByID(user.id)
+		User actual = systemUnderTest.deleteUserByID(user.id)
 		
 		then:
+		1 * mockUserRepository.findById(user.id) >> optional
 		1 * mockUserRepository.deleteById(user.id)
 		0 * _._
 		
-		
+		and:
+		user.equals(actual)
 		
 	}
+	
 	
 	@Test
 	def "test Get User By ID user not found"(){
