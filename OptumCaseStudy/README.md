@@ -26,3 +26,5 @@ localhost:8080/getUsersByName/firstName/lastName gives all rows with that first 
 localhost:8080/addUserNameOnly/firstName/lastName adds a new row with just the first and last name fields set.
 
 localhost:8080/addFullUser/firstName/middleInitial/lastName/city/state/zip/phone adds a record with all fields populated.
+
+Several 3rd party dependencies are used and are in the pom.  A simple maven build should get them for you if you do not already have them.  I choose to start this off in spring boot.  If I did a UI, I would have used thymeleaf.  I used H2 for the DB layer.  For testing I used a combination of mockito and spock.
